@@ -10,10 +10,16 @@ const ReviewForm = ({ onSubmit }) => {
       alert('Le rating doit être entre 1 et 5.');
       return;
     }
-    onSubmit({ rating: parseInt(rating), comment });
+    const newReview = {
+      rating: parseInt(rating),
+      comment,
+      date: new Date().toISOString() // ajoute la date actuelle
+    };
+    onSubmit(newReview);
     setRating('');
     setComment('');
   };
+  
 
   return (
     <form onSubmit={handleSubmit}>

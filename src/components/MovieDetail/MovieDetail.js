@@ -6,6 +6,7 @@ import { ComposantMoveDetail, BackButton } from './StyledMovieDetail'; // Assure
 import ReviewForm from './ReviewForm';
 import ErrorMessage from './ErrorMessage'; // Composant pour afficher les messages d'erreur
 
+
 const MovieDetail = () => {
   const [movie, setMovie] = useState(null);
   const [reviews, setReviews] = useState([]);
@@ -16,6 +17,8 @@ const MovieDetail = () => {
 
   const addReview = (review) => {
     setReviews([...reviews, review]);
+    const sortedReviews = [review, ...reviews].sort((a, b) => new Date(b.date) - new Date(a.date));
+    setReviews(sortedReviews);
   };
 
   useEffect(() => {
@@ -58,11 +61,17 @@ const MovieDetail = () => {
       <p className="paragraphe">{movie.opening_crawl}</p>
       <ReviewForm onSubmit={addReview} />
       {reviews.map((review, index) => (
-        <div key={index}>
-          <p>Évaluation : {review.rating}</p>
-          <p>Commentaire : {review.comment}</p>
-        </div>
-      ))}
+  <div key={index}>
+    <p>Évaluation : {review.rating}</p>
+    <p>Commentaire : {review.comment}</p>
+    <p>Date : {new Date(review.date).toLocaleString('fr-FR', {
+        year: 'numeric', month: 'long', day: 'numeric',
+        hour: '2-digit', minute: '2-digit'
+      })}
+    </p> {/* Affiche la date sans les secondes */}
+  </div>
+))}
+
     </ComposantMoveDetail>
   );
 };
