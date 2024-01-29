@@ -1,3 +1,4 @@
+// MovieRoute.js
 const express = require('express');
 const router = express.Router();
 const db = require('../firebase/firebaseConfig'); // Le chemin doit correspondre à l'emplacement réel du fichier firebaseConfig.js
@@ -5,12 +6,18 @@ const db = require('../firebase/firebaseConfig'); // Le chemin doit correspondre
 router.use(express.json());
 
 router.get('/', async (req, res) => {
-    const snapshot = await db.collection('movies').get();
-    // Cette ligne suivante sera modifiée pour ne récupérer que les titres des films
-    const movieTitles = snapshot.docs.map(doc => doc.data().movie); // Supposer que 'movie' est la clé pour les titres des films dans vos documents
-    res.status(200).json(movieTitles);
-  });
-  
+    try {
+        const snapshot = await db.collection('movies').get();
+        const movies = snapshot.docs.map(doc => {
+            const data = doc.data();
+            return { id: doc.id, title: data.title }; // 'title' est le nom du champ uniforme
+        });
+        res.status(200).json(movies);
+    } catch (error) {
+        console.error('Error getting movies:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
 
 router.get('/:id', async (req, res) => {
     const snapshot = await db.collection('movies').doc(req.params.id).get();
@@ -22,8 +29,20 @@ router.get('/:id', async (req, res) => {
 
 router.post('/', async (req, res) => {
     const { title, description, imageUrl } = req.body;
-    const movie = await db.collection('movies').add({ title, description, imageUrl });
-    res.status(201).send(`Created a new movie: ${movie.id}`);
+
+    // Vérifiez d'abord que le titre et la description ne sont pas undefined
+    if (title === undefined || description === undefined) {
+        return res.status(400).send('Title and description are required.');
+    }
+
+    try {
+        // Si le titre et la description sont définis, alors ajoutez le film à la collection
+        const movie = await db.collection('movies').add({ title, description, imageUrl });
+        res.status(201).send(`Created a new movie: ${movie.id}`);
+    } catch (error) {
+        console.error('Error adding movie:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
 });
 
 router.delete('/:id', async (req, res) => {

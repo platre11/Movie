@@ -1,4 +1,7 @@
+// ReviewFrom.js
 import React, { useState } from 'react';
+import RatingStars from './RatingStars';
+import styled from 'styled-components'
 
 const ReviewForm = ({ onSubmit }) => {
   const [rating, setRating] = useState('');
@@ -6,44 +9,40 @@ const ReviewForm = ({ onSubmit }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (rating < 1 || rating > 5) {
-      alert('Le rating doit être entre 1 et 5.');
+    if (!rating) {
+      alert('Veuillez donner une note avant de soumettre.');
       return;
     }
     const newReview = {
-      rating: parseInt(rating),
+      rating: parseInt(rating), // Assurez-vous que la note est un nombre
       comment,
-      date: new Date().toISOString() // ajoute la date actuelle
+      date: new Date().toISOString()
     };
     onSubmit(newReview);
-    setRating('');
-    setComment('');
+    setRating(0); // Réinitialiser la note
+    setComment(''); // Réinitialiser le commentaire
   };
   
-
+  const ButtonSoumettre = styled.button`
+  height: 3vh;
+  width: 5.5vw;
+  border: none;
+  border-radius: 10px;
+  `
   return (
     <form onSubmit={handleSubmit}>
       <div>
-        <label>
-          Rating:
-          <input
-            type="number"
-            value={rating}
-            onChange={(e) => setRating(e.target.value)}
-            required
-          />
-        </label>
+        <RatingStars rating={rating} setRating={setRating} />
       </div>
       <div>
-        <label>
-          Commentaire:
-          <textarea
-            value={comment}
-            onChange={(e) => setComment(e.target.value)}
-          />
-        </label>
+        <textarea
+          value={comment}
+          onChange={(e) => setComment(e.target.value)}
+          placeholder="Commentaire"
+          required
+        />
       </div>
-      <button type="submit">Soumettre</button>
+      <ButtonSoumettre style={{ marginBottom: '20px', background: 'white' }}type="submit">Soumettre</ButtonSoumettre>
     </form>
   );
 };
