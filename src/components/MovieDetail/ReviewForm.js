@@ -1,7 +1,7 @@
 // ReviewFrom.js
 import React, { useState } from 'react';
 import RatingStars from './RatingStars';
-import styled from 'styled-components'
+import {ButtonSoumettre} from "./StyledMovieDetail"
 
 const ReviewForm = ({ onSubmit }) => {
   const [rating, setRating] = useState('');
@@ -23,12 +23,6 @@ const ReviewForm = ({ onSubmit }) => {
     setComment(''); // Réinitialiser le commentaire
   };
   
-  const ButtonSoumettre = styled.button`
-  height: 3vh;
-  width: 5.5vw;
-  border: none;
-  border-radius: 10px;
-  `
   return (
     <form onSubmit={handleSubmit}>
       <div>
@@ -42,7 +36,7 @@ const ReviewForm = ({ onSubmit }) => {
           required
         />
       </div>
-      <ButtonSoumettre style={{ marginBottom: '20px', background: 'white' }}type="submit">Soumettre</ButtonSoumettre>
+      <ButtonSoumettre type="submit">Soumettre</ButtonSoumettre>
     </form>
   );
 };

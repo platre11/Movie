@@ -18,7 +18,6 @@ router.get('/', async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
-
 router.get('/:id', async (req, res) => {
     const snapshot = await db.collection('movies').doc(req.params.id).get();
     if (!snapshot.exists) {
@@ -26,17 +25,13 @@ router.get('/:id', async (req, res) => {
     }
     res.status(200).json({ id: snapshot.id, ...snapshot.data() });
 });
-
 router.post('/', async (req, res) => {
     const { title, description, imageUrl } = req.body;
 
-    // Vérifiez d'abord que le titre et la description ne sont pas undefined
     if (title === undefined || description === undefined) {
         return res.status(400).send('Title and description are required.');
     }
-
     try {
-        // Si le titre et la description sont définis, alors ajoutez le film à la collection
         const movie = await db.collection('movies').add({ title, description, imageUrl });
         res.status(201).send(`Created a new movie: ${movie.id}`);
     } catch (error) {

@@ -7,6 +7,7 @@ const App = () => {
   return (
       <Router>
         <Routes>
+          
           <Route path="/" element={<MovieList />} />
           <Route path="/movies/:id" element={<MovieDetail />} />
         </Routes>
